@@ -80,7 +80,7 @@ static time_t decode_rtc(const struct device *dev)
 	time.tm_min = RTC_BCD_DECODE(data->registers.rtc_min.min);
 	time.tm_hour = RTC_BCD_DECODE(data->registers.rtc_hours.hr);
 	time.tm_mday = RTC_BCD_DECODE(data->registers.rtc_date.date);
-	time.tm_wday = data->registers.rtc_weekday.weekday;
+	time.tm_wday = data->registers.rtc_weekday.weekday - 1;
 	/* tm struct starts months at 0, mcp7940n starts at 1 */
 	time.tm_mon = RTC_BCD_DECODE(data->registers.rtc_month.month) - 1;
 	/* tm struct uses years since 1900 but unix time uses years since 1970 */
@@ -126,7 +126,7 @@ static int encode_rtc(const struct device *dev, struct tm *time_buffer)
 	data->registers.rtc_min.min_ten = time_buffer->tm_min / 10;
 	data->registers.rtc_hours.hr_one = time_buffer->tm_hour % 10;
 	data->registers.rtc_hours.hr_ten = time_buffer->tm_hour / 10;
-	data->registers.rtc_weekday.weekday = time_buffer->tm_wday;
+	data->registers.rtc_weekday.weekday = time_buffer->tm_wday + 1;
 	data->registers.rtc_date.date_one = time_buffer->tm_mday % 10;
 	data->registers.rtc_date.date_ten = time_buffer->tm_mday / 10;
 	data->registers.rtc_month.month_one = month % 10;
@@ -169,7 +169,7 @@ static int encode_alarm(const struct device *dev, struct tm *time_buffer, uint8_
 	alm_regs->alm_min.min_ten = time_buffer->tm_min / 10;
 	alm_regs->alm_hours.hr_one = time_buffer->tm_hour % 10;
 	alm_regs->alm_hours.hr_ten = time_buffer->tm_hour / 10;
-	alm_regs->alm_weekday.weekday = time_buffer->tm_wday;
+	alm_regs->alm_weekday.weekday = time_buffer->tm_wday + 1;
 	alm_regs->alm_date.date_one = time_buffer->tm_mday % 10;
 	alm_regs->alm_date.date_ten = time_buffer->tm_mday / 10;
 	alm_regs->alm_month.month_one = month % 10;
