@@ -307,7 +307,7 @@ static int set_day_of_week(const struct device *dev, time_t *unix_time)
 	int rc = 0;
 
 	if (gmtime_r(unix_time, &time_buffer) != NULL) {
-		data->registers.rtc_weekday.weekday = time_buffer.tm_wday;
+		data->registers.rtc_weekday.weekday = time_buffer.tm_wday+1;
 		rc = write_register(dev, REG_RTC_WDAY,
 			*((uint8_t *)(&data->registers.rtc_weekday)));
 	} else {
